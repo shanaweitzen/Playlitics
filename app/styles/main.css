@@ -20,13 +20,6 @@ header {
 
 }
 
-.changethisone span{
-  background-color: #FFF;
-}
-
-.changethisone input{
-  border-right-style:none;
-}
 
 a:hover, a:visited, a:focus {
   outline: none;
@@ -92,11 +85,14 @@ ul.listHeader li:nth-child(4) {
 .hidden {
   display: none;
 }
-
+.newPlaylist {
+  margin: 0 auto;
+  width: 50%
+}
 .submitPlaylist {
   display: block;
-    margin: 0px auto;
-    width: 20%;
+  margin: 10px auto;
+  width: 20%;
 }
 
 #playlist , .modal-playlist{
