@@ -2,7 +2,7 @@
 <html lang="">
   <head>
     <meta charset="utf-8">
-    <meta name="description" content="">
+    <meta name="description" content="text/html">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Playlitics</title>
 
@@ -13,7 +13,7 @@
   </head>
   <body>    
     <header>
-        <div class"header-container">
+        <div class="header-container">
           Playlitics <span class="glyphicon"></span>
           <!-- <span>Your Spotify playground</span> -->
         </div>
@@ -26,7 +26,7 @@
       <p>Type the name of a song and click "Search" to see the list of the options. Then, click any song to add to your playlist.</p>
        <input class="search form-control" type="search" autocomplete="on" list="response" name="spotifysearch" placeholder="Type song name">
       <datalist id="response"></datalist>
-      <input type="submit" id="search" class="btn btn-primary" value="Search"  onclick="displaySongs()"/>
+      <input type="submit"  class="btn btn-primary search" value="Search"  onclick="displaySongs()"/>
   </div>
   <div class="searchResults">
     <ul id="results"></ul>
@@ -34,18 +34,18 @@
 </div>
 
 
-<div data-role="page" id="playlist" class="hidden">
+<div data-role="page" id="playlistPage" class="playlist-page hidden">
   <div class="playlistContainer">
     <h1>Playlists <a href="#" class="newPlaylist" onclick="showPlaylistInput()">+ create playlist</a></h1>
       <input type="text" id="createPlaylist" class="newPlaylist form-control hidden" placeholder="New Playlist">
       <div onclick="savePlaylist()" class="submitPlaylist btn btn-primary hidden">submit</div>
-      <ul id="playlist"></ul>
+      <ul id="playlist" class="playlist"></ul>
   </div>
 </div>
 <!-- display playlist detail -->
 <div data-role="page" id="playlistDetail" class="hidden">
   <div class="detailHeader">
-    <h1></h1>
+    <h1>Playlist Name</h1>
   </div>
     <h3>*re-order: drag and drop songs</h3>
   <ul id="playlistSongList"></ul>

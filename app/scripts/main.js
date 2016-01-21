@@ -4,7 +4,7 @@ var createLocatStorageDB = function () {
   if(lib.isNew()) {
     lib.createTable("playlist", ["name",  "totalDuration", "coolnessFactor", "songs", "tags"]);
     lib.commit();
-  };
+  }
 };
 
 var updateLocalStorageDB = function (playlistSelected, songsArray, tagsArray) {
@@ -58,19 +58,19 @@ var calculatePlaylistPopularity = function(playlistName) {
   return playlistCoolnessFactor;
 };
 
-var searchSongs = function (query) {
-  if(query.length > 0) {
+var searchSongs = function(query) {
+  if (query.length > 0) {
     $.ajax({
-        url: "https://api.spotify.com/v1/search?q=" + query + "&type=track&limit=5&q=",
-        dataType: 'json',
-        success: function(response) {
-          displayInputOptions(response.tracks.items)          
-        },
-        error: function(error){
-          console.log("error", error);
-        }
-      });
-    };
+      url: "https://api.spotify.com/v1/search?q=" + query + "&type=track&limit=5&q=",
+      dataType: "json",
+      success: function(response) {
+        displayInputOptions(response.tracks.items);
+      },
+      error: function(error) {
+        console.log(error);
+      }
+    });
+  }
 };
 
 var displayInputOptions = function(response) {
@@ -81,10 +81,12 @@ var displayInputOptions = function(response) {
             var seen = {};
             $("#response option").each(function () {
                   var txt = $(this).text();
-                  if (seen[txt])
-                      $(this).remove();
-                  else
-                      seen[txt] = true;
+                  if (seen[txt]){
+                    $(this).remove();
+                  } else {
+                    seen[txt] = true;
+                  }
+                      
               });
         });
     }
@@ -122,13 +124,14 @@ var displaySongs = function(response){
 
 var appendToList = function (data) {
   $.each(data, function(index, item) {
+    var dataImg = (item.album.images[2].url) ? item.album.images[2].url : item.album.images[0].url;
     var ul = $('ul#results');
-    var li = $('<li data-uid="'+ generateUUID() +'" data-img="'+ item.album.images[2].url +'" data-name="'+ item.name +'" data-album="'+ item.album.name +'" data-target="#playlistModal"  data-toggle="modal"/>'); 
+    var li = $('<li data-uid="'+ generateUUID() +'" data-img="'+ dataImg +'" data-name="'+ item.name +'" data-album="'+ item.album.name +'" data-target="#playlistModal"  data-toggle="modal"/>'); 
     var div = $('<div />');
     var previewSpan = $('<span class="glyphicon glyphicon-play-circle" />');
-    var addSpan = $('<span class="addSong glyphicon glyphicon-plus" />');       
+    var addSpan = $('<span class="addSong glyphicon glyphicon-plus-sign" />');       
     var songTitle = $('<p  data-title="'+ item.name +'" clas="songTitle" />');
-    var artistName = $('<p data-artist="'+ item.artists[0].name +'" class="artistName" />')
+    var artistName = $('<p data-artist="'+ item.artists[0].name +'" class="artistName" />');
     var albumName = $('<p data-album="'+ item.album.name +'" clas="albumName" />');
     var popularitySpan = $('<span data-popularity="'+ item.popularity +'" class="popularitySpan glyphicon glyphicon-heart-empty"/>');
     var timeSpan = $('<span data-duration="'+ millisToMinutesAndSeconds(item.duration_ms)+'" class="timeSpan" />');
@@ -168,11 +171,6 @@ var millisToMinutesAndSeconds = function(millis) {
   return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
 };
 
-function millisToMinutesAndSeconds(millis){
-  var minutes = Math.floor(millis / 60000);
-  var seconds = ((millis % 60000) / 1000).toFixed(0);
-  return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
-};
 
 var showPlaylistModal = function(artist, songName, albumName, albumImg, songPopularity , songDuration , songMSDuration, uid) {
   $("ul.modal-playlist li").remove();
@@ -195,7 +193,7 @@ var addSongToPlaylist = function(uid, artist, albumName, albumImg, songDuration,
     playlistName: playlistSelected,
     popularity: songPopularity,
     name: songName   
-  }
+  };
   var songsArray = (lib.queryAll("playlist", {query: {name: playlistSelected }})[0].songs);
   var tagsArray = (lib.queryAll("playlist", {query: {name: playlistSelected }})[0].tags);
   songsArray.push(newSong);
@@ -217,14 +215,14 @@ var createPlaylistPage = function() {
 };
 
 var showSearch = function ()  {
-  $("div#playlist").addClass("hidden");
+  $("div#playlistPage").addClass("hidden");
   $("div#search").removeClass("hidden");
   $("div#playlistDetail").addClass("hidden");
   $("ul#playlistSongList li").remove();
 };
 
 var showPlaylist = function() {
-  $("div#playlist").removeClass("hidden");
+  $("div#playlistPage").removeClass("hidden");
   $("div#search").addClass("hidden");
   $("div#playlistDetail").addClass("hidden");
   $("ul#playlist li").remove();
@@ -253,7 +251,7 @@ var savePlaylist = function() {
   var totalDuration  = "n/a";
   var tags = [];
 
-  createPlayListBlock(name, playlistPopularity , totalDuration , tags)
+  createPlayListBlock(name, playlistPopularity , totalDuration , tags);
 
   $("input#createPlaylist").val(" ");
   
@@ -268,7 +266,7 @@ var createPlayListBlock = function (name, playlistPopularity , totalDuration, ta
   var rightArrow = $('<a href="#" class="goToPlaylist glyphicon glyphicon-chevron-right" />');
   var tagInput = $('<input maxlength="20" type="text" class="form-control tags" placeholder="add tag" data-name='+ name +'>');
   var tagList = $('<ul id="tagList"/>');
-  var addTagMsg = $('<span class="addTag" />')
+  var addTagMsg = $('<span class="addTag" />');
   var tagImg = $('<span class="glyphicon glyphicon-tag tagImg"/>');
   var divAddTag = $('<div class="addTagBtn '+ name +'" onclick="showTagForm()"/>');
   var saveTag = $('<span class="saveTag btn" />');
@@ -297,7 +295,7 @@ var createPlayListBlock = function (name, playlistPopularity , totalDuration, ta
 };
 
 var showPlayListDetail = function(playlistName, data, ul) {
-  $("div#playlist").addClass("hidden");
+  $("div#playlistPage").addClass("hidden");
   $("div#playlistDetail").removeClass("hidden");
   $("#playlistDetail .detailHeader > h1").text(playlistName);
 
@@ -305,10 +303,10 @@ var showPlayListDetail = function(playlistName, data, ul) {
     var artist = (item.artist)? item.artist : "";
     var li = $('<li data-uid="'+ item.id +'"/>'); 
     var div = $("<div />");
-    var previewSpan = $("<span class=\"glyphicon glyphicon-play-circle\" />")
-    var addSpan = $("<span class=\"addSong glyphicon glyphicon-plus\" />")       
+    var previewSpan = $("<span class=\"glyphicon glyphicon-play-circle\" />");
+    var addSpan = $("<span class=\"addSong glyphicon glyphicon-plus\" />");      
     var songTitle = $('<p  data-title="'+ item.name +'" clas="songTitle" />');
-    var artistName = $('<p data-artist="'+ artist +'" class="artistName" />')
+    var artistName = $('<p data-artist="'+ artist +'" class="artistName" />');
     var albumName = $('<p data-album="'+ item.albumName +'" clas="albumName" />');
     var albumImg = $('<img src="'+ item.albumImg +'">');
     var popularitySpan = $('<span data-popularity="'+ item.popularity +'" class="popularitySpan glyphicon glyphicon-heart-empty"/>');
@@ -347,7 +345,7 @@ var deleteSongFromPlaylist = function(playlistSelected, songName, uid, songsArra
 var generateUUID = function() {
   var d = new Date().getTime();
     if (window.performance && typeof window.performance.now === "function") {
-      d += performance.now();; //use high-precision timer if available
+      d += performance.now(); //use high-precision timer if available
     }
     var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
       var r = (d + Math.random()*16)%16 | 0;
@@ -363,11 +361,16 @@ $(function() {
 });
 
 var bindEvents = function() {
+
   $('input.search' ).keyup(function(e) {
     e.preventDefault();
-    if(e.keyCode !== 38 && e.keyCode !== 40){
+    if(e.keyCode !== 38 && e.keyCode !== 40) {
       searchSongs($('input.search').val().trim());
     }
+  });
+
+  $('input.search').on("change keyup paste", function() {
+    $("#results li").remove();
   });
 
  //SHOW MODAL
@@ -398,7 +401,7 @@ var bindEvents = function() {
   });
 
   //add Tags to playlist
-  $("#playlist").on("click", ".saveTag.btn", function() {
+  $("#playlistPage").on("click", ".saveTag.btn", function() {
     var playlistSelected = $(this).parent().attr("id");
     var songsArray = (lib.queryAll("playlist", {query: {name: playlistSelected }})[0].songs);
     var playlistDuration = lib.queryAll("playlist", {query: {name: playlistSelected }})[0].duration;
@@ -409,7 +412,7 @@ var bindEvents = function() {
   });
 
   //go to playlist details
-  $("#playlist").on("click", "ul#playlist li a.goToPlaylist", function(){
+  $("#playlistPage").on("click", "ul#playlist li a.goToPlaylist", function(){
     var playlistName = $(this).parent().attr("data-name");
     var data = lib.queryAll("playlist", {query: {name: playlistName}})[0].songs;      
     var ul = $("#playlistSongList");
