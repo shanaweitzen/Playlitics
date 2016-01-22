@@ -234,10 +234,6 @@ var showPlaylist = function() {
   });
 };
 
-var whatIsTheCoolNessFactor = function(coolnessfactor) {
-    alert(coolnessfactor);
-};
-
 var savePlaylist = function() {
   if ($("input#createPlaylist").val().length === 0) {
     alert("must type a name to save a playlist");
