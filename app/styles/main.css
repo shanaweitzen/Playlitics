@@ -292,16 +292,18 @@ a:hover, a:visited, a:focus {
 }
 #tagList {
   height: 20px;
-  margin: -10px auto;
+  margin: 0px auto;
   list-style: none;
   width: 100%;
   
 }
 #tagList li {
-  border: none;
+  border: 1px solid #026aa7;
   display: inline-block;
   height: 20px;
   list-style: none;
+  margin: 4px;
+  text-align: center;
   width: 100px; 
 }
 /* Responsive: Portrait tablets and up */

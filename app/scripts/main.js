@@ -131,8 +131,8 @@ var appendToList = function (data) {
     var previewSpan = $('<span class="glyphicon glyphicon-play-circle" />');
     var addSpan = $('<span class="addSong glyphicon glyphicon-plus-sign" />');       
     var songTitle = $('<p  data-title="'+ item.name +'" clas="songTitle" />');
-    var artistName = $('<p data-artist="'+ item.artists[0].name +'" class="artistName" />');
-    var albumName = $('<p data-album="'+ item.album.name +'" clas="albumName" />');
+    var artistName = $('<p data-artist="'+ shortname(item.artists[0].name) +'" class="artistName" />');
+    var albumName = $('<p data-album="'+ shortname(item.album.name) +'" clas="albumName" />');
     var popularitySpan = $('<span data-popularity="'+ item.popularity +'" class="popularitySpan glyphicon glyphicon-heart-empty"/>');
     var timeSpan = $('<span data-duration="'+ millisToMinutesAndSeconds(item.duration_ms)+'" class="timeSpan" />');
     var msSpan = $('<span data-duration-ms="'+ item.duration_ms+'" class="millisSpan" />');
@@ -200,13 +200,18 @@ var addSongToPlaylist = function(uid, artist, albumName, albumImg, songDuration,
   updateLocalStorageDB(playlistSelected, songsArray, tagsArray);
 };
 
-var addTagsToPlaylist = function(playlistSelected, songsArray, playlistDuration, playlistPopularity, tagsArray, newTag) {
-  if($("input.tags").val().length <= 0) {
+var addTagsToPlaylist = function(playlistSelected, songsArray, tagsArray, newTag) {
+  if($('input.'+playlistSelected+'').val().length <= 0) {
     alert("no tags to save");
   } 
 
+  if(tagsArray.length >= 6) {
+    alert("you have reached your tag limit");
+    return;
+  }
+
   tagsArray.push(newTag);
-  $('<li>'+ $("input.tags").val().trim() + '</li>').appendTo("ul#tagList");
+  $('<li>'+ $('input.'+playlistSelected+'').val().trim() + '</li>').appendTo('ul.'+playlistSelected+'');
   updateLocalStorageDB(playlistSelected, songsArray, tagsArray); 
 };
 
@@ -260,8 +265,8 @@ var createPlayListBlock = function (name, playlistPopularity , totalDuration, ta
   var playlistDuration = $('<span data-duration="'+ totalDuration +'"/>');
   var coolnessFactor = $('<span class="popularity" data-popularity="'+ playlistPopularity +'" />');
   var rightArrow = $('<a href="#" class="goToPlaylist glyphicon glyphicon-chevron-right" />');
-  var tagInput = $('<input maxlength="20" type="text" class="form-control tags" placeholder="add tag" data-name='+ name +'>');
-  var tagList = $('<ul id="tagList"/>');
+  var tagInput = $('<input maxlength="20" type="text" class="form-control tags '+name+'" placeholder="add tag" data-name='+ name +'>');
+  var tagList = $('<ul id="tagList" class='+name+'/>');
   var addTagMsg = $('<span class="addTag" />');
   var tagImg = $('<span class="glyphicon glyphicon-tag tagImg"/>');
   var divAddTag = $('<div class="addTagBtn '+ name +'" onclick="showTagForm()"/>');
@@ -284,8 +289,9 @@ var createPlayListBlock = function (name, playlistPopularity , totalDuration, ta
   rightArrow.appendTo(li);
   tagInput.appendTo(divTagForm);
   saveTag.appendTo(divTagForm);
+  tagList.appendTo(divTagForm);
   divTagForm.appendTo(li);
-  tagList.appendTo(li);
+  
   li.appendTo(ul);
 
 };
@@ -403,8 +409,8 @@ var bindEvents = function() {
     var playlistDuration = lib.queryAll("playlist", {query: {name: playlistSelected }})[0].duration;
     var playlistPopularity = lib.queryAll("playlist", {query: {name: playlistSelected }})[0].coolnessFactor;
     var tagsArray = lib.queryAll("playlist", {query: {name: playlistSelected }})[0].tags;
-    var newTag = $("input.tags").val().trim();
-    addTagsToPlaylist(playlistSelected, songsArray, playlistDuration, playlistPopularity, tagsArray, newTag);     
+    var newTag = $('input.'+playlistSelected+'').val().trim();
+    addTagsToPlaylist(playlistSelected, songsArray, tagsArray, newTag);     
   });
 
   //go to playlist details
@@ -425,8 +431,6 @@ var bindEvents = function() {
     deleteSongFromPlaylist(playlistSelected, songName, uid, songsArray, tagsArray);  
     $(this).parent().css({"display" : "none"});
   });
-
-    console.log(localStorage);
 
 }; 
 
